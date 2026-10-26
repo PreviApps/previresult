@@ -15,7 +15,6 @@ export class LaboratoriesController {
 
   @Post('find')
   findAll(@Body() findResultsLaboratory: FindResultsLaboratory) {
-    console.log(findResultsLaboratory)
     return this.laboratoriesService.findAll(findResultsLaboratory);
   }
 

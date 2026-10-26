@@ -21,7 +21,6 @@ export const getLaboratories = async (payload: LaboratoriesPayload): Promise<ILa
   });
   if (!response.ok) throw new Error('Error al consultar laboratorios');
   const data = await response.json();
-  console.log(data)
   return data
 };
 

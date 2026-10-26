@@ -45,7 +45,6 @@ export class AnnarService {
     }
 
     if (store.promise) {
-      this.logger.log(`[${baseUrl}] Petición de token en curso, esperando...`);
       return store.promise;
     }
 
