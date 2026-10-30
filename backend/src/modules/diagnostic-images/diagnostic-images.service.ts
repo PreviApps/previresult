@@ -1,35 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDiagnosticImageDto } from './dto/create-diagnostic-image.dto';
-import { UpdateDiagnosticImageDto } from './dto/update-diagnostic-image.dto';
-import { Repository } from 'typeorm';
 import { DiagnosticImage } from './entities/diagnostic-image.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EDXService } from 'src/services/edx/edx.service';
 
 @Injectable()
 export class DiagnosticImagesService {
 
   constructor(
-    @InjectRepository(DiagnosticImage)
-    private readonly diagnosticRepository: Repository<DiagnosticImage>
+    private readonly edxService: EDXService
   ){}
 
-  async create(createDiagnosticImageDto: CreateDiagnosticImageDto): Promise<DiagnosticImage> {
-    return await this.diagnosticRepository.create(createDiagnosticImageDto)
+  async findOrdersPerPatient(tipoDoc: string, numDoc: string){
+    return await this.edxService.getOrdersPerPatient(tipoDoc, numDoc);
   }
 
-  async findAll(): Promise<DiagnosticImage[]> {
-    return await this.diagnosticRepository.find();
+  async getSummaryPerReport(report_id: string | number){
+    return await this.edxService.getSummaryPerReport(report_id);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} diagnosticImage`;
+  async getDocument(report_id: string | number){
+    return await this.edxService.getDocument(report_id);
   }
 
-  update(id: number, updateDiagnosticImageDto: UpdateDiagnosticImageDto) {
-    return `This action updates a #${id} diagnosticImage`;
+  async getDiagnosticImageDICOM(report_id: string | number, studyInstanceUIDs: string){
+    return await this.edxService.getDiagnosticImageDICOM(report_id, studyInstanceUIDs);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} diagnosticImage`;
-  }
 }

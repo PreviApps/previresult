@@ -1,7 +1,7 @@
 import React from 'react';
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { CustomSheet } from "../../../../components/custom_sheet/CustomSheet";
-import type { LaboratoriesDetailsSheetProps } from "./laboratories-details-sheet-types";
+import type { LaboratoriesDetailsSheetProps } from "./laboratories-details-sheet.types";
 import { LaboratoriesPDF } from "../laboratories_pdf/LaboratoriesPDF";
 
 export const LaboratoriesDetailsSheet: React.FC<LaboratoriesDetailsSheetProps> = ({

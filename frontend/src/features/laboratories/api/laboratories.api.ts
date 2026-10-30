@@ -23,12 +23,3 @@ export const getLaboratories = async (payload: LaboratoriesPayload): Promise<ILa
   const data = await response.json();
   return data
 };
-
-/*export const createLaboratorie = async (payload: CreateLaboratorie): Promise<ILaboratories> => {
-  const nueva: ILaboratories = {
-    id: Date.now(), // Simulado
-    ...payload,
-  };
-  laboratoriesMock.push(nueva);
-  return nueva;
-};*/

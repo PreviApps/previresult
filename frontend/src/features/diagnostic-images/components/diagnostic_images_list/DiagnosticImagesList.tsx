@@ -1,14 +1,17 @@
 import { CustomCard } from "../../../../components/custom_card/CustomCard";
 import { adaptToCard } from "../../../../utils/card.adapter";
-import type { IDiagnosticImages } from "../../types/diagnostic-images.types"
+import { formatDate } from "../../../../utils/date.helper";
+import type { IDiagnosticImages, Patient } from "../../types/diagnostic-images.types"
 
 interface DiagnosticImagesListProps {
   images: IDiagnosticImages[];
+  patient: Patient
   onSelectImage?: (image: IDiagnosticImages) => void;
 }
 
 export const DiagnosticImagesList: React.FC<DiagnosticImagesListProps> = ({
   images,
+  patient,
   onSelectImage
 }) => {
   return (
@@ -17,17 +20,17 @@ export const DiagnosticImagesList: React.FC<DiagnosticImagesListProps> = ({
         // Usamos el adaptador solo para las props básicas
         const cardProps = adaptToCard({
           item: img,
-          getTitle: (i) => i.name,
-          getDescription: (i) => `Diagnóstico: ${i.diagnostico}`,
+          getTitle: (i) => `Orden No: ${i.code}`,
+          getDescription: (i) => `Fecha: ${formatDate(i.created_at)}`,
           onClick: (i) => onSelectImage?.(i)
         });
 
         return (
-          <CustomCard key={img.id} {...cardProps}>
+          <CustomCard key={img.id} {...cardProps} onClick={()=> onSelectImage?.(img)}>
             <div className="flex flex-col gap-2 border-t border-slate-100 pt-3">
               <div className="flex justify-between items-center text-xs">
                 <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-medium">
-                  Folio: {img.folio}
+                  Orden de especialista
                 </span>
                 <span className="text-slate-400 text-[10px]">{/*ID: {img.id}*/}</span>
               </div>

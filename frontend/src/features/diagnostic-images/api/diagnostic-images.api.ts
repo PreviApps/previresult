@@ -1,23 +1,58 @@
-import type { IDiagnosticImages } from "../types/diagnostic-images.types";
+const API_URL = import.meta.env.VITE_API_URL
 
-const imagenesMock: IDiagnosticImages[] = [
-  { id: 'ujcsdbfgkuieabfuoabefuaj', name: 'Radiografía de tórax', folio: 'HCN001234', diagnostico: 'No presenta facturas' },
-  { id: 'uhtouabnfoaeuifbnoa4ef', name: 'Cráneo rx', folio: 'HCN0012234', diagnostico: 'Todo ok' },
-  { id: 'kadnfglabnfaleifbna', name: 'Cráneo rx', folio: 'HCN0012234', diagnostico: 'Todo ok' },
-  { id: 'shjkfgbkabnfia3nfalinrf3n', name: 'Cráneo rx', folio: 'HCN0012234', diagnostico: 'Todo ok' },
-  { id: 'aejfni3apdfaprkaprfj3arp', name: 'Cráneo rx', folio: 'HCN0012234', diagnostico: 'Todo ok' },
-];
+export interface DiagnosticImagesPayload {
+  tipo_documento: string
+  numero_documento: string
+}
 
-export const getImages = async (): Promise<IDiagnosticImages[]> => {
-  // Simulamos latencia de red opcionalmente o retornamos directo
-  return imagenesMock;
+export interface DICOMImagePayload {
+  report_id: string
+  studyInstanceUIDs: string
+}
+
+export const getImages = async (payload: DiagnosticImagesPayload): Promise<any> => {
+  const response = await fetch(`${API_URL}/diagnostic-images/orders`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+  if (!response.ok) throw new Error('Error al consultar laboratorios');
+  const data = await response.json();
+  return data
 };
 
-/*export const createImage = async (payload: CreateDiagnosticImage): Promise<IDiagnosticImages> => {
-  const nueva: IDiagnosticImages = {
-    id: Date.now(), // Simulado
-    ...payload,
-  };
-  imagenesMock.push(nueva);
-  return nueva;
-};*/
+export const getSummaryPerReport = async (param: string | number): Promise<any> => {
+  const response = await fetch(`${API_URL}/diagnostic-images/order-detail/${param}`);
+  if (!response.ok) throw new Error('Error al consultar el detalle del reporte');
+
+  const data = await response.json();
+  return data;
+}
+
+export const getDocument = async (param: string | number): Promise<any> => {
+  const response = await fetch(`${API_URL}/diagnostic-images/get-document/${param}`);
+  if (!response.ok) throw new Error('Error al consultar el documento del reporte');
+
+  const data = await response.json();
+  return data;
+}
+
+export const getDICOMContent = async (payload: DICOMImagePayload): Promise<any> => {
+  const response = await fetch(`${API_URL}/diagnostic-images/get-rx`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+  
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.message || 'Error al obtener el visor DICOM');
+  }
+  return await response.json();
+};
