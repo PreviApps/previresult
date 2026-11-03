@@ -20,31 +20,24 @@ export const fetchSessionFromBackend = async (): Promise<SessionData | null> => 
   try {
     const response = await fetch(`${API_URL}/auth/session`, {
       method: 'GET',
+      credentials: 'include', // <--- ¡Vital para enviar y recibir la cookie!
       headers: {
         'Accept': 'application/json',
       },
     });
 
-    if (!response.ok) {
-      return null;
-    }
+    if (!response.ok) return null;
 
     const data = await response.json();
-
-    if (data && data.docNumber && data.typeDoc) {
-      const sessionData: SessionData = {
-        username: data.username || 'Usuario',
+    if (data && data.docNumber) {
+      return {
+        username: data.username,
         typeDoc: data.typeDoc,
         docNumber: data.docNumber,
       };
-
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
-      return sessionData;
     }
-
     return null;
   } catch (error) {
-    console.error("Error al sincronizar la sesión con el backend:", error);
     return null;
   }
 };

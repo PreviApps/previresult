@@ -1,31 +1,30 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthPayloadDto } from './dto/auth-payload.dto';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
-  private currentSession: AuthPayloadDto | null = null;
+  // Almacén en memoria simulando una sesión por ID
+  private sessions = new Map<string, AuthPayloadDto>();
 
-  setSession(payload: AuthPayloadDto) {
-    this.currentSession = payload;
-    return {
-      success: true,
-      message: 'Sesión establecida correctamente',
-      session: payload,
-    };
+  setSession(payload: AuthPayloadDto): string {
+    const sessionId = crypto.randomUUID(); // Genera un ID único para este usuario
+    this.sessions.set(sessionId, payload);
+    return sessionId;
   }
 
-  getSession() {
-    if (!this.currentSession) {
-      throw new NotFoundException('No hay ninguna sesión activa en el sistema');
+  getSession(sessionId: string): AuthPayloadDto {
+    const session = this.sessions.get(sessionId);
+    if (!session) {
+      throw new UnauthorizedException('No hay una sesión activa válida');
     }
-    return this.currentSession;
+    return session;
   }
 
-  clearSession() {
-    this.currentSession = null;
-    return {
-      success: true,
-      message: 'Sesión cerrada correctamente',
-    };
+  clearSession(sessionId: string) {
+    if (sessionId) {
+      this.sessions.delete(sessionId);
+    }
+    return { success: true, message: 'Sesión cerrada correctamente' };
   }
 }
