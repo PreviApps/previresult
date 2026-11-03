@@ -3,6 +3,7 @@ import { ImagesView } from "../../features/diagnostic-images/views/DiagnosticIma
 import { LaboratoriesView } from "../../features/laboratories/views/Laboratories";
 import { CustomDateRange } from "../custom_date_range/CustomDateRange";
 import { useLaboratories } from "../../features/laboratories/hooks/useLaboratories";
+import { LogoutButton } from "../auth_provider/LogoutButton";
 
 export const CustomTabs = () => {
 
@@ -20,6 +21,7 @@ export const CustomTabs = () => {
         <div className="w-full sm:w-auto">
           <CustomDateRange onSearch={handleSearch} />
         </div>
+        <LogoutButton></LogoutButton>
       </div>
 
       <Tabs className="w-full text-black p-12" variant="secondary">

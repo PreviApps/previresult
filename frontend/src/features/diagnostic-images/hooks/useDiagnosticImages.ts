@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { IDiagnosticImages, Patient } from "../types/diagnostic-images.types";
 import { getImages, type DiagnosticImagesPayload } from "../api/diagnostic-images.api";
-import { sessionData } from "../../../core/auth/auth";
+import { getSessionData } from "../../../core/auth/auth";
 
 export const useReportDiagnosticImages = () => {
   const [reportImages, setReportImages] = useState<IDiagnosticImages[]>([]);
@@ -14,6 +14,12 @@ export const useReportDiagnosticImages = () => {
       try {
         setLoading(true);
         setError(null);
+
+        const sessionData = getSessionData();
+
+        if (!sessionData) {
+          throw new Error("No hay sesión activa");
+        }
 
         const payload: DiagnosticImagesPayload = {
           tipo_documento: sessionData.typeDoc,

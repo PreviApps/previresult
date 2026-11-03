@@ -7,6 +7,7 @@ import { SignaturesModule } from './modules/signatures/signatures.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SpecialistEntity } from './modules/signatures/entities/specialist.entity';
 import { DiagnosticImagesModule } from './modules/diagnostic-images/diagnostic-images.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -53,7 +54,7 @@ import { DiagnosticImagesModule } from './modules/diagnostic-images/diagnostic-i
         //ssl: { rejectUnauthorized: false },
       }),
     }),
-    LaboratoriesModule, SignaturesModule, DiagnosticImagesModule
+    LaboratoriesModule, SignaturesModule, DiagnosticImagesModule, AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

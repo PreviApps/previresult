@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { ILaboratories } from "../types/laboratories.types";
 import { getLaboratories, type LaboratoriesPayload } from "../api/laboratories.api";
 import type { DateValue } from "@heroui/react";
-import { sessionData } from "../../../core/auth/auth";
+import { getSessionData } from "../../../core/auth/auth";
 
 type DateRangeType = {
   start: DateValue;
@@ -26,6 +26,12 @@ export const useLaboratories = () => {
       const formatNumber = (n: number) => String(n).padStart(2, "0");
       const fecha_ini = `${formatNumber(dateRange.start.day)}/${formatNumber(dateRange.start.month)}/${dateRange.start.year}`;
       const fecha_fin = `${formatNumber(dateRange.end.day)}/${formatNumber(dateRange.end.month)}/${dateRange.end.year}`;
+
+      const sessionData = getSessionData();
+
+      if (!sessionData) {
+        throw new Error("No hay sesión activa");
+      }
 
       const payload: LaboratoriesPayload = {
         tipo_documento: sessionData.typeDoc,
