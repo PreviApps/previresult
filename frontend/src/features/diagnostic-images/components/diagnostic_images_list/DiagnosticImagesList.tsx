@@ -11,7 +11,6 @@ interface DiagnosticImagesListProps {
 
 export const DiagnosticImagesList: React.FC<DiagnosticImagesListProps> = ({
   images,
-  patient,
   onSelectImage
 }) => {
   return (
