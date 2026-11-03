@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: 
+      context: ./backend
+    container_name: previresult-backend
+    restart: always
+    ports:
+      - "3015:3015"
+    env_file: 
+      - ./backend/.env
+
+  frontend:
+    build: 
+      context: ./frontend
+    container_name: previresult-frontend
+    restart: always
+    ports:
+      - "4015:80"
+    depends_on:
+      - backend
+    env_file:
+      - ./frontend/.env
