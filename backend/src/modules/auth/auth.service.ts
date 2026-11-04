@@ -1,30 +1,27 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthPayloadDto } from './dto/auth-payload.dto';
 import * as crypto from 'crypto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  // Almacén en memoria simulando una sesión por ID
-  private sessions = new Map<string, AuthPayloadDto>();
+
+  constructor(private readonly jwtService: JwtService) { }
 
   setSession(payload: AuthPayloadDto): string {
-    const sessionId = crypto.randomUUID(); // Genera un ID único para este usuario
-    this.sessions.set(sessionId, payload);
-    return sessionId;
+    return this.jwtService.sign(payload);
   }
 
-  getSession(sessionId: string): AuthPayloadDto {
-    const session = this.sessions.get(sessionId);
-    if (!session) {
-      throw new UnauthorizedException('No hay una sesión activa válida');
+  getSession(token: string): AuthPayloadDto {
+    try {
+      const payload = this.jwtService.verify<AuthPayloadDto>(token);
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException('No hay una sesión activa válida o ha expirado');
     }
-    return session;
   }
 
-  clearSession(sessionId: string) {
-    if (sessionId) {
-      this.sessions.delete(sessionId);
-    }
+  clearSession(sessionId?: string) {
     return { success: true, message: 'Sesión cerrada correctamente' };
   }
 }

@@ -5,22 +5,21 @@ import { AuthPayloadDto } from './dto/auth-payload.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('session')
   setSession(
     @Body() authPayloadDto: AuthPayloadDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const sessionId = this.authService.setSession(authPayloadDto);
+    // Genera el token JWT firmado con los datos del usuario
+    const token = this.authService.setSession(authPayloadDto);
 
-    // Guardamos el ID de sesión en una cookie HttpOnly segura para este navegador
-    res.cookie('session_id', sessionId, {
+    // Guardamos el token en una cookie HttpOnly segura
+    res.cookie('session_id', token, {
       httpOnly: true,
-      //secure: process.env.NODE_ENV === 'production',
       secure: true,
-      //sameSite: 'lax',
-      sameSite: 'none', 
+      sameSite: 'none',
       domain: '.previsalud.com.co',
       maxAge: 3600000, // 1 hora
     });
@@ -30,20 +29,25 @@ export class AuthController {
 
   @Get('session')
   getSession(@Req() req: Request) {
-    const sessionId = req.cookies?.session_id;
-    if (!sessionId) {
+    const token = req.cookies?.session_id;
+    if (!token) {
       throw new UnauthorizedException('No hay sesión activa');
     }
-    return this.authService.getSession(sessionId);
+    // Verifica el JWT y retorna los datos decodificados
+    return this.authService.getSession(token);
   }
 
   @Delete('session')
   clearSession(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    const sessionId = req.cookies?.session_id;
-    this.authService.clearSession(sessionId);
+    const token = req.cookies?.session_id;
+    this.authService.clearSession(token);
 
-    // Borramos la cookie
-    res.clearCookie('session_id');
+    // Borramos la cookie especificando el dominio y los flags para que el navegador la elimine con éxito
+    res.clearCookie('session_id', {
+      domain: '.previsalud.com.co',
+      secure: true,
+      sameSite: 'none',
+    });
 
     return { success: true, message: 'Sesión cerrada' };
   }
