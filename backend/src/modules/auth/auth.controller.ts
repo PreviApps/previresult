@@ -17,8 +17,11 @@ export class AuthController {
     // Guardamos el ID de sesión en una cookie HttpOnly segura para este navegador
     res.cookie('session_id', sessionId, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      //secure: process.env.NODE_ENV === 'production',
+      secure: true,
+      //sameSite: 'lax',
+      sameSite: 'none', 
+      domain: '.previsalud.com.co',
       maxAge: 3600000, // 1 hora
     });
 
