@@ -1,11 +1,3 @@
-/*export const sessionData = {
-  username: 'Juan',
-  typeDoc: 'CC',
-  //docNumber: '33212990',
-  //docNumber: '8709951',
-  docNumber: '22432796',
-}*/
-
 export interface SessionData {
   username: string
   typeDoc: string
@@ -20,7 +12,7 @@ export const fetchSessionFromBackend = async (): Promise<SessionData | null> => 
   try {
     const response = await fetch(`${API_URL}/auth/session`, {
       method: 'GET',
-      credentials: 'include', // <--- ¡Vital para enviar y recibir la cookie!
+      credentials: 'include', // <--- Vital para enviar y recibir la cookie
       headers: {
         'Accept': 'application/json',
       },
@@ -30,11 +22,13 @@ export const fetchSessionFromBackend = async (): Promise<SessionData | null> => 
 
     const data = await response.json();
     if (data && data.docNumber) {
-      return {
+      const sessionData: SessionData = {
         username: data.username,
         typeDoc: data.typeDoc,
         docNumber: data.docNumber,
       };
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+      return sessionData;
     }
     return null;
   } catch (error) {
@@ -59,6 +53,7 @@ export const logoutSession = async (): Promise<void> => {
   try {
     await fetch(`${API_URL}/auth/session`, {
       method: 'DELETE',
+      credentials: 'include', // <--- Vital para que el backend sepa qué cookie borrar
     });
   } catch (error) {
     console.error("Error al notificar cierre de sesión al backend", error);
