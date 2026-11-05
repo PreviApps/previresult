@@ -124,7 +124,12 @@ export class EDXService {
 
     // Validación segura de pacientes encontrados
     if (!patientData || patientData.message === 'patients not found' || !patientData.patients || patientData.patients.length === 0) {
-      throw new NotFoundException('Paciente no encontrado en el sistema externo');
+      //throw new NotFoundException('Paciente no encontrado en el sistema externo');
+      return {
+        patient: null,
+        filteredOrders: [],
+        message: 'Paciente no registrado'
+      };
     }
 
     const patient = patientData.patients[0];
@@ -133,7 +138,12 @@ export class EDXService {
     const orders = await this.listOrdersPerPatient(idPatient);
 
     if (!orders || !orders.work_orders || !Array.isArray(orders.work_orders)) {
-      throw new NotFoundException('No se encontraron órdenes de trabajo para este paciente');
+      //throw new NotFoundException('No se encontraron órdenes de trabajo para este paciente');
+      return {
+        patient,
+        filteredOrders: [],
+        message: 'No se encontraron órdenes de trabajo para este paciente'
+      };
     }
 
     const filteredOrders = orders.work_orders.filter(
