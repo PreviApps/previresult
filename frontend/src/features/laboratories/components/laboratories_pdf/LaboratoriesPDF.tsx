@@ -204,13 +204,15 @@ const styles = StyleSheet.create({
 
 interface LaboratoriesPDFProps {
   laboratorie: ILaboratories;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
-export const LaboratoriesPDF: React.FC<LaboratoriesPDFProps> = ({ laboratorie }) => {
+export const LaboratoriesPDF: React.FC<LaboratoriesPDFProps> = ({ laboratorie, onLoadingChange }) => {
   const { paciente, fechaSolicitud, nom_entidad, examenes } = laboratorie;
   const { fetchSignature } = useSignature();
   // Estado para almacenar las firmas indexadas por el ID del profesional (usrCodigo)
   const [signatures, setSignatures] = useState<Record<string, { firma: string, profesion: string | null }>>({});
+  const [isSignaturesLoading, setIsSignaturesLoading] = useState<boolean>(true);
 
   // Función auxiliar para agrupar las líneas de referencia (V o F) en el analito principal
   const groupAnalytesWithReferences = (resultados: any[]) => {
@@ -262,6 +264,8 @@ export const LaboratoriesPDF: React.FC<LaboratoriesPDFProps> = ({ laboratorie })
   // Efecto para consultar las firmas de cada médico único presente en los exámenes
   useEffect(() => {
     const loadSignatures = async () => {
+      setIsSignaturesLoading(true);
+      onLoadingChange?.(true);
       const newSignatures: Record<string, { firma: string; profesion: string | null }> = {};
 
       for (const group of doctorGroups) {
@@ -276,12 +280,29 @@ export const LaboratoriesPDF: React.FC<LaboratoriesPDFProps> = ({ laboratorie })
         }
       }
       setSignatures(newSignatures);
+      setIsSignaturesLoading(false);
+      onLoadingChange?.(false);
     };
 
     if (doctorGroups.length > 0) {
       loadSignatures();
+    } else {
+      setIsSignaturesLoading(false);
+      onLoadingChange?.(false);
     }
   }, [laboratorie]);
+
+  if (isSignaturesLoading) {
+    return (
+      <Document>
+        <Page size="LETTER" style={styles.page}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 14, color: '#64748b' }}>Cargando datos y firmas del reporte...</Text>
+          </View>
+        </Page>
+      </Document>
+    );
+  }
 
   return (
     <Document>
