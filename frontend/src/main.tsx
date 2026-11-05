@@ -4,6 +4,8 @@ import './index.css'
 import App from './App.tsx'
 import { Typography } from '@heroui/react'
 import { AuthProvider } from './components/auth_provider/AuthProvider.tsx'
+import { Buffer } from 'buffer';
+(window as any).Buffer = (window as any).Buffer || Buffer;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
