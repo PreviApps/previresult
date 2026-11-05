@@ -24,8 +24,9 @@ export function CustomDateRange({ onSearch }: CustomDateRangeProps) {
 
   return (
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full">
+      <div className="w-full sm:w-80" data-tour="date-range">
       <DateRangePicker
-        className="w-full sm:w-80"
+        className="w-full"
         value={dateRange}
         onChange={setDateRange}
         endName="endDate"
@@ -68,8 +69,10 @@ export function CustomDateRange({ onSearch }: CustomDateRangeProps) {
           </RangeCalendar>
         </DateRangePicker.Popover>
       </DateRangePicker>
+      </div>
 
       <button
+        data-tour="search-btn"
         onClick={handleSearchClick}
         disabled={!isRangeValid}
         className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg shadow transition-colors flex items-center gap-2 h-10"

@@ -29,7 +29,7 @@ export const LaboratoriesDetailsSheet: React.FC<LaboratoriesDetailsSheetProps> =
             </h2>
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div data-tour="lab-exams" className="flex flex-col gap-2">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Exámenes ordenados:</p>
             {laboratorie.examenes.map((lab, index) => (
               <div key={index} className="p-2.5 bg-slate-50 rounded-md border border-slate-100">
@@ -42,7 +42,7 @@ export const LaboratoriesDetailsSheet: React.FC<LaboratoriesDetailsSheetProps> =
         </div>
 
         {/* FOOTER / BOTÓN AL FINAL DE TODO EL SCROLL */}
-        <div className="pt-6 mt-6 border-t border-slate-100 bg-white">
+        <div data-tour="lab-actions" className="pt-6 mt-6 border-t border-slate-100 bg-white">
           {isSignaturesLoading ? (
             <button
               disabled

@@ -6,4 +6,6 @@ export interface CustomCardProps {
   description: string;
   children?: ReactNode;
   onClick?: () => void;
+  /** Marca para el tour guiado (data-tour) */
+  dataTour?: string;
 }

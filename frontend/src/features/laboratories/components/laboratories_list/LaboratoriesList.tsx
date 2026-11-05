@@ -12,7 +12,7 @@ export const LaboratoriesList: React.FC<LaboratoriesListProps> = ({
   onSelectLaboratorie
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+    <div data-tour="lab-list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
       {laboratories.map((lab) => {
         // Usamos el adaptador solo para las props básicas
         const cardProps = adaptToCard({
@@ -23,7 +23,7 @@ export const LaboratoriesList: React.FC<LaboratoriesListProps> = ({
         });
 
         return (
-          <CustomCard key={lab.id} {...cardProps} onClick={() => onSelectLaboratorie?.(lab)}>
+          <CustomCard key={lab.id} {...cardProps} dataTour="lab-card" onClick={() => onSelectLaboratorie?.(lab)}>
             <div className="flex flex-col gap-2 border-t border-slate-100 pt-3">
               <div className="flex justify-between items-center text-xs">
                 <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-medium">

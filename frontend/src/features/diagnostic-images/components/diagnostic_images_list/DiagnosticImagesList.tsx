@@ -14,7 +14,7 @@ export const DiagnosticImagesList: React.FC<DiagnosticImagesListProps> = ({
   onSelectImage
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+    <div data-tour="img-list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
       {images.map((img) => {
         // Usamos el adaptador solo para las props básicas
         const cardProps = adaptToCard({
@@ -25,7 +25,7 @@ export const DiagnosticImagesList: React.FC<DiagnosticImagesListProps> = ({
         });
 
         return (
-          <CustomCard key={img.id} {...cardProps} onClick={()=> onSelectImage?.(img)}>
+          <CustomCard key={img.id} {...cardProps} dataTour="img-card" onClick={()=> onSelectImage?.(img)}>
             <div className="flex flex-col gap-2 border-t border-slate-100 pt-3">
               <div className="flex justify-between items-center text-xs">
                 <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-medium">

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { startLabsTour } from "../../tour/tours";
 import { LaboratoriesDetailsSheet } from "../components/laboratories_details_sheet/LaboratoriesDetailsSheet";
 import { LaboratoriesList } from "../components/laboratories_list/LaboratoriesList";
 import type { ILaboratories } from "../types/laboratories.types";
@@ -24,6 +25,14 @@ export const LaboratoriesView: React.FC<LaboratoriesViewProps> = ({
     setSelectedLaboratorie(lab)
     setIsSheetOpen(true)
   };
+
+  // Tour de laboratorios: la primera vez que la consulta lista tarjetas
+  useEffect(() => {
+    if (!loading && laboratories.length > 0) {
+      const t = setTimeout(startLabsTour, 300);
+      return () => clearTimeout(t);
+    }
+  }, [loading, laboratories]);
 
   if (!hasSearched) {
     return (

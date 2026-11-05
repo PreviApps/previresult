@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { startImagesTour } from '../../tour/tours';
 import type { IDiagnosticImages } from '../types/diagnostic-images.types';
 import { DiagnosticImagesList } from '../components/diagnostic_images_list/DiagnosticImagesList';
 import { useReportDiagnosticImages } from '../hooks/useDiagnosticImages';
@@ -14,6 +15,14 @@ export const ImagesView: React.FC = () => {
     setSelectedReportImage(img)
     setIsSheetOpen(true)
   };
+
+  // Tour de imágenes: la primera vez que la pestaña lista tarjetas
+  useEffect(() => {
+    if (!loading && reportImages.length > 0 && patient) {
+      const t = setTimeout(startImagesTour, 300);
+      return () => clearTimeout(t);
+    }
+  }, [loading, reportImages, patient]);
 
   if (loading) return <p>Cargando reportes...</p>;
   if (error) return <p className="p-6 text-red-500">{error}</p>;

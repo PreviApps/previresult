@@ -1,4 +1,7 @@
+import { useEffect } from "react";
 import { Tabs, type DateRange } from "@heroui/react";
+import { HelpTourButton } from "../../features/tour/HelpTourButton";
+import { startGeneralTour } from "../../features/tour/tours";
 import { ImagesView } from "../../features/diagnostic-images/views/DiagnosticImages";
 import { LaboratoriesView } from "../../features/laboratories/views/Laboratories";
 import { CustomDateRange } from "../custom_date_range/CustomDateRange";
@@ -8,6 +11,12 @@ import { LogoutButton } from "../auth_provider/LogoutButton";
 export const CustomTabs = () => {
 
   const { laboratories, loading, error, hasSearched, fetchLaboratories } = useLaboratories();
+
+  // Tour general: solo la primera vez que el usuario entra
+  useEffect(() => {
+    const t = setTimeout(() => startGeneralTour(), 500);
+    return () => clearTimeout(t);
+  }, []);
 
   const handleSearch = (range: DateRange | null) => {
     if (range) {
@@ -21,17 +30,20 @@ export const CustomTabs = () => {
         <div className="w-full sm:w-auto">
           <CustomDateRange onSearch={handleSearch} />
         </div>
-        <LogoutButton></LogoutButton>
+        <div className="flex items-center gap-2">
+          <HelpTourButton />
+          <LogoutButton></LogoutButton>
+        </div>
       </div>
 
       <Tabs className="w-full text-black p-12" variant="secondary">
         <Tabs.ListContainer>
           <Tabs.List aria-label="Options">
-            <Tabs.Tab id="laboratories">
+            <Tabs.Tab id="laboratories" data-tour="tab-labs">
               Laboratorios
               <Tabs.Indicator />
             </Tabs.Tab>
-            <Tabs.Tab id="diagnostic-images">
+            <Tabs.Tab id="diagnostic-images" data-tour="tab-images">
               Imágenes Diagnósticas
               <Tabs.Indicator />
             </Tabs.Tab>

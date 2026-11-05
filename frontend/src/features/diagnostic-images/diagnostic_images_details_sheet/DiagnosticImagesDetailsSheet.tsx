@@ -100,7 +100,7 @@ export const DiagnosticImagesDetailsSheet: React.FC<DiagnosticImagesDetailsSheet
 
         </div>
 
-        <div className="pt-6 mt-6 border-t border-slate-100 bg-white">
+        <div data-tour="img-actions" className="pt-6 mt-6 border-t border-slate-100 bg-white">
 
           <button
             onClick={handleViewPDF}
