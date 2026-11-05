@@ -1,5 +1,5 @@
 import React from 'react';
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDFDownloadLink, BlobProvider } from "@react-pdf/renderer";
 import { CustomSheet } from "../../../../components/custom_sheet/CustomSheet";
 import type { LaboratoriesDetailsSheetProps } from "./laboratories-details-sheet.types";
 import { LaboratoriesPDF } from "../laboratories_pdf/LaboratoriesPDF";
@@ -55,10 +55,27 @@ export const LaboratoriesDetailsSheet: React.FC<LaboratoriesDetailsSheetProps> =
               Cargando firmas de médicos...
             </button>
           ) : (
+            <div className="flex gap-2">
+            <BlobProvider document={<LaboratoriesPDF laboratorie={laboratorie} signatures={signatures} />}>
+              {({ url, loading }) => (
+                <button
+                  type="button"
+                  disabled={loading || !url}
+                  onClick={() => url && window.open(url, '_blank')}
+                  className="flex-1 px-4 py-2.5 border border-teal-600 text-teal-700 hover:bg-teal-50 disabled:opacity-60 disabled:cursor-not-allowed text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  {loading ? 'Generando...' : 'Ver PDF'}
+                </button>
+              )}
+            </BlobProvider>
             <PDFDownloadLink
               document={<LaboratoriesPDF laboratorie={laboratorie} signatures={signatures} />}
               fileName={`resultado_lab_${laboratorie.paciente.num_documento}.pdf`}
-              className="w-full px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold rounded-lg shadow transition-colors flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold rounded-lg shadow transition-colors flex items-center justify-center gap-2"
             >
               {({ loading }) => (
                 <>
@@ -69,6 +86,7 @@ export const LaboratoriesDetailsSheet: React.FC<LaboratoriesDetailsSheetProps> =
                 </>
               )}
             </PDFDownloadLink>
+            </div>
           )}
         </div>
 
