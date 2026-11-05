@@ -19,9 +19,13 @@ export const getImages = async (payload: DiagnosticImagesPayload): Promise<any> 
     },
     body: JSON.stringify(payload)
   });
-  if (!response.ok) throw new Error('Error al consultar laboratorios');
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.message || 'Error al consultar las órdenes médicas');
+  }
+
   const data = await response.json();
-  return data
+  return data;
 };
 
 export const getSummaryPerReport = async (param: string | number): Promise<any> => {
@@ -49,7 +53,7 @@ export const getDICOMContent = async (payload: DICOMImagePayload): Promise<any> 
     },
     body: JSON.stringify(payload)
   });
-  
+
   if (!response.ok) {
     const errData = await response.json().catch(() => ({}));
     throw new Error(errData.message || 'Error al obtener el visor DICOM');
