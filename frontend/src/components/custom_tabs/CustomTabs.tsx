@@ -27,19 +27,16 @@ export const CustomTabs = () => {
       <Tabs className="w-full text-black p-12" variant="secondary">
         <Tabs.ListContainer>
           <Tabs.List aria-label="Options">
-            <Tabs.Tab id="diagnostic-images">
-              Imágenes
-              <Tabs.Indicator />
-            </Tabs.Tab>
             <Tabs.Tab id="laboratories">
               Laboratorios
               <Tabs.Indicator />
             </Tabs.Tab>
+            <Tabs.Tab id="diagnostic-images">
+              Imágenes Diagnósticas
+              <Tabs.Indicator />
+            </Tabs.Tab>
           </Tabs.List>
         </Tabs.ListContainer>
-        <Tabs.Panel className="pt-4" id="diagnostic-images">
-          <ImagesView></ImagesView>
-        </Tabs.Panel>
         <Tabs.Panel className="pt-4" id="laboratories">
           <LaboratoriesView
             hasSearched={hasSearched}
@@ -47,6 +44,9 @@ export const CustomTabs = () => {
             loading={loading}
             laboratories={laboratories}>
           </LaboratoriesView>
+        </Tabs.Panel>
+        <Tabs.Panel className="pt-4" id="diagnostic-images">
+          <ImagesView></ImagesView>
         </Tabs.Panel>
       </Tabs>
     </>

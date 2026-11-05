@@ -28,7 +28,7 @@ export const LaboratoriesView: React.FC<LaboratoriesViewProps> = ({
   if (!hasSearched) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center text-slate-500 gap-2">
-        <p className="text-base font-medium">Selecciona un rango de fechas y presiona <strong>Buscar</strong> para consultar los laboratorios.</p>
+        <p className="text-base font-medium">Selecciona un rango de fechas y presiona <strong>Consultar</strong> para consultar los laboratorios.</p>
       </div>
     );
   }
