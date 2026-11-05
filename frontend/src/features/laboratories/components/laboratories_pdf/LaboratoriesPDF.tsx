@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import type { ILaboratories } from '../../types/laboratories.types';
+import type { SignatureMap } from '../../hooks/useLaboratorySignatures';
 import previsaludLogo from '../../../../assets/previsalud.png';
-import { useSignature } from '../../../signatures/hooks/useSignature';
 
 // Estilos avanzados trasladados de Tailwind CSS a React-PDF
 const styles = StyleSheet.create({
@@ -204,15 +204,14 @@ const styles = StyleSheet.create({
 
 interface LaboratoriesPDFProps {
   laboratorie: ILaboratories;
-  onLoadingChange?: (loading: boolean) => void;
+  // Firmas ya cargadas, indexadas por idProfesional (ver useLaboratorySignatures)
+  signatures: SignatureMap;
 }
 
-export const LaboratoriesPDF: React.FC<LaboratoriesPDFProps> = ({ laboratorie, onLoadingChange }) => {
+// Componente PURO: sin hooks ni peticiones. Solo debe renderizarse dentro de
+// PDFDownloadLink / PDFViewer / pdf(), nunca directamente en el DOM.
+export const LaboratoriesPDF: React.FC<LaboratoriesPDFProps> = ({ laboratorie, signatures }) => {
   const { paciente, fechaSolicitud, nom_entidad, examenes } = laboratorie;
-  const { fetchSignature } = useSignature();
-  // Estado para almacenar las firmas indexadas por el ID del profesional (usrCodigo)
-  const [signatures, setSignatures] = useState<Record<string, { firma: string, profesion: string | null }>>({});
-  const [isSignaturesLoading, setIsSignaturesLoading] = useState<boolean>(true);
 
   // Función auxiliar para agrupar las líneas de referencia (V o F) en el analito principal
   const groupAnalytesWithReferences = (resultados: any[]) => {
@@ -260,49 +259,6 @@ export const LaboratoriesPDF: React.FC<LaboratoriesPDFProps> = ({ laboratorie, o
   }, {});
 
   const doctorGroups = Object.values(doctorGroupsMap) as any[];
-
-  // Efecto para consultar las firmas de cada médico único presente en los exámenes
-  useEffect(() => {
-    const loadSignatures = async () => {
-      setIsSignaturesLoading(true);
-      onLoadingChange?.(true);
-      const newSignatures: Record<string, { firma: string; profesion: string | null }> = {};
-
-      for (const group of doctorGroups) {
-        if (group.idProfesional) {
-          const data = await fetchSignature(group.nombreProfesional); // ¡Sin mandar instancia! El backend busca en las 3.
-          if (data) {
-            newSignatures[group.idProfesional] = {
-              firma: data.firma || '',
-              profesion: data.profesion || null,
-            };
-          }
-        }
-      }
-      setSignatures(newSignatures);
-      setIsSignaturesLoading(false);
-      onLoadingChange?.(false);
-    };
-
-    if (doctorGroups.length > 0) {
-      loadSignatures();
-    } else {
-      setIsSignaturesLoading(false);
-      onLoadingChange?.(false);
-    }
-  }, [laboratorie]);
-
-  if (isSignaturesLoading) {
-    return (
-      <Document>
-        <Page size="LETTER" style={styles.page}>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 14, color: '#64748b' }}>Cargando datos y firmas del reporte...</Text>
-          </View>
-        </Page>
-      </Document>
-    );
-  }
 
   return (
     <Document>

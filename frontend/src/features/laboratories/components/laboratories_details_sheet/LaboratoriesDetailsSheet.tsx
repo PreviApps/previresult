@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { CustomSheet } from "../../../../components/custom_sheet/CustomSheet";
 import type { LaboratoriesDetailsSheetProps } from "./laboratories-details-sheet.types";
 import { LaboratoriesPDF } from "../laboratories_pdf/LaboratoriesPDF";
+import { useLaboratorySignatures } from "../../hooks/useLaboratorySignatures";
 
 export const LaboratoriesDetailsSheet: React.FC<LaboratoriesDetailsSheetProps> = ({
   isOpen,
@@ -10,7 +11,8 @@ export const LaboratoriesDetailsSheet: React.FC<LaboratoriesDetailsSheetProps> =
   laboratorie
 }) => {
 
-  const [isSignaturesLoading, setIsSignaturesLoading] = useState(true);
+  // Las firmas se cargan aquí (en React DOM) y se pasan ya resueltas al PDF
+  const { signatures, loading: isSignaturesLoading } = useLaboratorySignatures(laboratorie);
 
   if (!laboratorie) return null;
 
@@ -37,12 +39,6 @@ export const LaboratoriesDetailsSheet: React.FC<LaboratoriesDetailsSheetProps> =
               </div>
             ))}
           </div>
-          <div className="hidden">
-            <LaboratoriesPDF
-              laboratorie={laboratorie}
-              onLoadingChange={setIsSignaturesLoading}
-            />
-          </div>
         </div>
 
         {/* FOOTER / BOTÓN AL FINAL DE TODO EL SCROLL */}
@@ -60,7 +56,7 @@ export const LaboratoriesDetailsSheet: React.FC<LaboratoriesDetailsSheetProps> =
             </button>
           ) : (
             <PDFDownloadLink
-              document={<LaboratoriesPDF laboratorie={laboratorie} />}
+              document={<LaboratoriesPDF laboratorie={laboratorie} signatures={signatures} />}
               fileName={`resultado_lab_${laboratorie.paciente.num_documento}.pdf`}
               className="w-full px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold rounded-lg shadow transition-colors flex items-center justify-center gap-2"
             >
