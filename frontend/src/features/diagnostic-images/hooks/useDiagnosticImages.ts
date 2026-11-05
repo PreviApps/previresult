@@ -46,8 +46,8 @@ export const useReportDiagnosticImages = () => {
 
         setPatient(rawPatient);
         setReportImages(mappedImages);
-      } catch (err) {
-        setError('Error al cargar las órdenes médicas');
+      } catch (err: any) {
+        setError(err.message || 'Error al cargar las órdenes médicas');
         setReportImages([]);
         setPatient(null);
       } finally {
