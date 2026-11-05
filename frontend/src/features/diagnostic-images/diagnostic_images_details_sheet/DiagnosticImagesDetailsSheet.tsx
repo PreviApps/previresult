@@ -22,6 +22,10 @@ export const DiagnosticImagesDetailsSheet: React.FC<DiagnosticImagesDetailsSheet
   const isCanceled = reportImage.state === "canceled";
   const hasPacsUid = Boolean(reportImage.pacs_uid);
 
+  // Verificamos que ya no esté cargando los detalles y que no haya error
+  const isReady = !loading && !error && details !== null;
+  const canOpenPdf = hasReport && !isCanceled && isReady && !loadingPdf;
+
   const handleViewPDF = () => {
     if (!hasReport || !reportImage.report_id) return;
     handleOpenPdf(reportImage.report_id);
@@ -100,13 +104,17 @@ export const DiagnosticImagesDetailsSheet: React.FC<DiagnosticImagesDetailsSheet
 
           <button
             onClick={handleViewPDF}
-            disabled={!hasReport || isCanceled || loadingPdf}
-            className={`w-full py-2.5 px-4 rounded-lg font-medium text-xs transition-colors flex items-center justify-center gap-2 ${hasReport && !isCanceled && !loadingPdf
-              ? 'bg-slate-900 text-white hover:bg-slate-800 cursor-pointer'
-              : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+            disabled={!canOpenPdf}
+            className={`w-full py-2.5 px-4 rounded-lg font-medium text-xs transition-colors flex items-center justify-center gap-2 ${canOpenPdf
+                ? 'bg-slate-900 text-white hover:bg-slate-800 cursor-pointer'
+                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
               }`}
           >
-            {loadingPdf ? 'Generando PDF...' : (hasReport ? 'Ver Reporte en PDF' : 'Reporte no disponible')}
+            {loadingPdf
+              ? 'Generando PDF...'
+              : loading
+                ? 'Cargando detalles...'
+                : (hasReport ? 'Ver Reporte en PDF' : 'Reporte no disponible')}
           </button>
 
           {/* Botón para ver Imágenes DICOM */}
@@ -114,8 +122,8 @@ export const DiagnosticImagesDetailsSheet: React.FC<DiagnosticImagesDetailsSheet
             onClick={handleViewDicom}
             disabled={!hasPacsUid || isCanceled || loadingDicom}
             className={`w-full py-2.5 px-4 rounded-lg font-medium text-xs transition-colors flex items-center justify-center gap-2 ${hasPacsUid && !isCanceled && !loadingDicom
-                ? 'border border-slate-300 text-slate-700 hover:bg-slate-50 cursor-pointer'
-                : 'border border-slate-200 text-slate-300 cursor-not-allowed'
+              ? 'border border-slate-300 text-slate-700 hover:bg-slate-50 cursor-pointer'
+              : 'border border-slate-200 text-slate-300 cursor-not-allowed'
               }`}
           >
             {loadingDicom ? 'Cargando visor PACS...' : 'Ver Imágenes DICOM'}
